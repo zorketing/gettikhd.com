@@ -8,6 +8,7 @@ $base_path = isset($is_page) && $is_page ? '../' : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Video Downloader - No Watermark</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📥</text></svg>">
     <meta name="description" content="Download TikTok videos without watermark for free. Fast, HD quality, and unlimited downloads.">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/style.css">
     <!-- Google Fonts -->

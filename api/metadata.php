@@ -6,7 +6,10 @@
 
 // Configuration
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header('X-Content-Type-Options: nosniff');
+// CORS restricted - same-origin by default (no Access-Control-Allow-Origin header)
+// Uncomment and set specific domain for cross-origin requests if needed:
+// header('Access-Control-Allow-Origin: https://yourdomain.com');
 header('Access-Control-Allow-Methods: POST');
 
 // Paths

@@ -214,6 +214,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
+        const btnVideo = document.getElementById('dlVideoBtn');
+        const btnAudio = document.getElementById('dlAudioBtn');
+
+        // Disable buttons to prevent double-click
+        if (btnVideo) btnVideo.disabled = true;
+        if (btnAudio) btnAudio.disabled = true;
 
         // Reset and show progress
         progressContainer.style.display = 'block';
@@ -222,8 +228,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Ensure proper encoding for URL parameters
         // encodeURIComponent handles special chars in filenames and URL symbols properly
-        const proxyUrl = `api/stream.php?url=${encodeURIComponent(url)}&name=${encodeURIComponent(filename || 'tiktok_media')}`;
+        // noheader=1 prevents Content-Disposition headers so IDM doesn't intercept
+        const proxyUrl = `api/stream.php?url=${encodeURIComponent(url)}&name=${encodeURIComponent(filename || 'tiktok_media')}&noheader=1`;
         console.log('Fetching Proxy URL:', proxyUrl);
+
+        let downloadSuccess = false;
 
         try {
             const response = await fetch(proxyUrl);
@@ -265,15 +274,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            const blob = new Blob(chunks);
-            const downloadUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = `${filename || 'media'}.${ext}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(downloadUrl);
+            // Only proceed if we actually received data
+            if (receivedLength > 0) {
+                const blob = new Blob(chunks);
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `${filename || 'media'}.${ext}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+                downloadSuccess = true;
+            }
 
             setTimeout(() => {
                 progressContainer.style.display = 'none';
@@ -281,22 +294,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Streaming failed:', error);
-
-            // 3. FALLBACK MECHANISM
-            // If the JS streaming fails (e.g., CORS issue, network interrupt, output buffering weirdness), 
-            // fallback to direct browser navigation which handles downloads more robustly.
-            console.warn('Switching to direct fallback download...');
-            showError('Streaming interrupted. Switching to direct download...');
-
-            // Wait a moment for the user to see the message (optional)
+            showError('Download failed. Please try again.');
+            progressContainer.style.display = 'none';
+        } finally {
+            // Re-enable buttons after a short delay to allow visual feedback or reset
             setTimeout(() => {
-                // Hide progress bar as we can't track direct download
-                progressContainer.style.display = 'none';
-                showError(''); // Clear error
-
-                // Trigger direct download
-                window.location.href = proxyUrl;
-            }, 1000);
+                const btnVideo = document.getElementById('dlVideoBtn');
+                const btnAudio = document.getElementById('dlAudioBtn');
+                if (btnVideo) btnVideo.disabled = false;
+                if (btnAudio) btnAudio.disabled = false;
+            }, 1500);
         }
     }
 

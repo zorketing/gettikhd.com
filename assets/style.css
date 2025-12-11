@@ -434,12 +434,12 @@ input[type="email"]:focus {
 /* --- Result Section --- */
 .result-section {
     width: 100%;
-    padding: 2rem 5%;
+    padding: 0 5%;
     display: flex;
     justify-content: center;
     align-items: center;
     /* Center vertically if needed */
-    margin: 3rem 0;
+    margin: 0;
     /* Vertical margin to separate from hero/footer */
 }
 
@@ -456,7 +456,7 @@ input[type="email"]:focus {
     padding: 40px;
     border-radius: 30px;
     box-shadow: var(--neu-flat);
-    margin: 40px auto;
+    margin: 1rem auto;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1011,6 +1011,10 @@ input[type="email"]:focus {
         text-align: center;
     }
 
+    .hero-section {
+        padding: 1rem 3%;
+    }
+
     /* Rest of Mobile styles continue... */
 
     .hero-content {
@@ -1024,7 +1028,7 @@ input[type="email"]:focus {
     }
 
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
     }
 
     .hero-subtitle {
@@ -1047,18 +1051,21 @@ input[type="email"]:focus {
         width: 100%;
     }
 }
+
 /* --- Mobile Hamburger Menu --- */
 .hamburger {
     display: none;
     flex-direction: column;
     justify-content: space-around;
-    width: 44px; /* Match theme btn */
+    width: 44px;
+    /* Match theme btn */
     height: 44px;
     background: var(--bg-color);
     border: none;
     cursor: pointer;
     padding: 11px;
-    border-radius: 50%; /* Match theme btn */
+    border-radius: 50%;
+    /* Match theme btn */
     box-shadow: var(--neu-icon);
     transition: all 0.3s ease;
 }
@@ -1096,7 +1103,8 @@ input[type="email"]:focus {
 
     .nav-links {
         position: absolute;
-        top: 85px; /* Below navbar */
+        top: 85px;
+        /* Below navbar */
         left: 5%;
         width: 90%;
         flex-direction: column;
@@ -1117,7 +1125,7 @@ input[type="email"]:focus {
         opacity: 1;
         transform: translateY(0);
     }
-    
+
     .nav-links a {
         width: 100%;
         text-align: center;

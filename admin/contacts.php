@@ -57,7 +57,11 @@ if (isset($_GET['view'])) {
             <a href="contacts.php" style="color: var(--accent-color);">All Contacts</a>
             <a href="../index.php" target="_blank">View Site</a>
         </div>
-        <a href="dashboard.php?logout=1" class="theme-btn" title="Logout">⏻</a>
+        <form method="POST" action="dashboard.php" style="display: inline;">
+            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+            <input type="hidden" name="logout" value="1">
+            <button type="submit" class="theme-btn" title="Logout" style="border: none; cursor: pointer;">⏻</button>
+        </form>
     </nav>
 
     <div class="admin-wrapper">

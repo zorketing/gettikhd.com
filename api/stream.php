@@ -13,10 +13,46 @@ header('X-Frame-Options: SAMEORIGIN');
 // Get Parameters
 $videoUrl = isset($_GET['url']) ? urldecode($_GET['url']) : ''; // Decode as requested
 $filename = $_GET['name'] ?? 'video.mp4';
+$noHeader = isset($_GET['noheader']); // Skip download headers for JS fetch (bypasses IDM)
 
 if (empty($videoUrl)) {
     http_response_code(400);
     echo json_encode(['error' => 'URL is required']);
+    exit;
+}
+
+// SSRF Protection: Whitelist allowed domains
+$allowedPatterns = [
+    'tiktokcdn.com',
+    'tiktokcdn-us.com',
+    'tiktok.com',
+    'musical.ly',
+    'muscdn.com',
+    'byteoversea.com',
+    'ibytedtos.com',
+    'tiktokv.com',
+    'tikwm.com'
+];
+
+$parsedUrl = parse_url($videoUrl);
+$host = $parsedUrl['host'] ?? '';
+$scheme = $parsedUrl['scheme'] ?? '';
+
+// Must be HTTPS and from allowed domain
+$isAllowed = false;
+if ($scheme === 'https' && !empty($host)) {
+    foreach ($allowedPatterns as $pattern) {
+        if (str_ends_with($host, $pattern)) {
+            $isAllowed = true;
+            break;
+        }
+    }
+}
+
+if (!$isAllowed) {
+    http_response_code(403);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Forbidden: URL domain not allowed']);
     exit;
 }
 
@@ -98,14 +134,17 @@ function download_video($videoUrl, $filename) {
         // If this is the FIRST chunk of body data
         if (!$downloadStarted) {
             if ($httpCode >= 200 && $httpCode < 300) {
-                // SUCCESS: Send Download Headers
-                header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename="' . $filename . '"');
-                header('Content-Transfer-Encoding: binary');
-                header('Pragma: public');
-                header('Cache-Control: must-revalidate');
+                // SUCCESS: Send Download Headers (skip if noheader mode for JS fetch)
+                global $noHeader;
+                if (!$noHeader) {
+                    header('Content-Description: File Transfer');
+                    header('Content-Disposition: attachment; filename="' . $filename . '"');
+                    header('Content-Transfer-Encoding: binary');
+                    header('Pragma: public');
+                    header('Cache-Control: must-revalidate');
+                }
                 
-                // Pass through upstream headers
+                // Pass through upstream headers (always needed)
                 if (isset($headersBuffer['Content-Type'])) header($headersBuffer['Content-Type']);
                 if (isset($headersBuffer['Content-Length'])) header($headersBuffer['Content-Length']);
                 

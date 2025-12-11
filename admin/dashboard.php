@@ -3,8 +3,11 @@
 require_once 'config.php';
 checkLogin();
 
-// Logout Logic
-if (isset($_GET['logout'])) {
+// Logout Logic (Changed to POST with CSRF for security)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        die("Invalid CSRF Token");
+    }
     session_destroy();
     header('Location: login.php');
     exit;
@@ -38,7 +41,11 @@ $recentMessages = $recentStmt->fetchAll();
             <a href="contacts.php">All Contacts</a>
             <a href="../index.php" target="_blank">View Site</a>
         </div>
-        <a href="?logout=1" class="theme-btn" title="Logout" style="text-decoration: none;">⏻</a>
+        <form method="POST" action="" style="display: inline;">
+            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+            <input type="hidden" name="logout" value="1">
+            <button type="submit" class="theme-btn" title="Logout" style="border: none; cursor: pointer;">⏻</button>
+        </form>
     </nav>
 
     <div class="admin-wrapper">

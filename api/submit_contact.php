@@ -2,7 +2,8 @@
 // api/submit_contact.php
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header('X-Content-Type-Options: nosniff');
+// CORS restricted - remove wildcard for security
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
@@ -26,6 +27,16 @@ if (empty($name) || empty($email) || empty($message)) {
     echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
     exit;
 }
+
+// Security: Validate email format
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid email format']);
+    exit;
+}
+
+// Security: Sanitize for email header injection
+$name = preg_replace('/[\r\n]/', '', $name);
+$email = preg_replace('/[\r\n]/', '', $email);
 
 // Format Entry
 $timestamp = date('Y-m-d H:i:s');
@@ -64,7 +75,12 @@ file_put_contents($logFile, $entry, FILE_APPEND);
 
 // --- SEND EMAIL ---
 $to = 'jacobfred19729@gmail.com';
-$subject = "New Message from $name - TikTok Downloader";
+$subject = "New Message from " . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . " - TikTok Downloader";
+
+// Security: Escape user input for HTML email
+$safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+$safeEmail = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+$safeMessage = nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8'));
 
 // HTML Email Template (Matches Website Design)
 $emailBody = "
@@ -93,13 +109,13 @@ $emailBody = "
         
         <div class='card'>
             <div class='label'>Name</div>
-            <div class='value'>$name</div>
+            <div class='value'>$safeName</div>
             
             <div class='label'>Email</div>
-            <div class='value'><a href='mailto:$email' style='color: #ff0050; text-decoration: none;'>$email</a></div>
+            <div class='value'><a href='mailto:$safeEmail' style='color: #ff0050; text-decoration: none;'>$safeEmail</a></div>
             
             <div class='label'>Message</div>
-            <div class='value'>$message</div>
+            <div class='value'>$safeMessage</div>
         </div>
         
         <div class='footer'>
