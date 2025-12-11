@@ -568,6 +568,7 @@ input[type="email"]:focus {
         width: 95%;
         padding: 30px;
         text-align: center;
+        margin-top: 0;
     }
 
     .card-preview {
@@ -1012,7 +1013,8 @@ input[type="email"]:focus {
     }
 
     .hero-section {
-        padding: 1rem 3%;
+        padding: 0.5rem 3%;
+        padding-bottom: 0;
     }
 
     /* Rest of Mobile styles continue... */
