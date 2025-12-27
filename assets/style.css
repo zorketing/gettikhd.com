@@ -536,17 +536,40 @@ input[type="email"]:focus {
     color: var(--text-secondary);
 }
 
+.video-title-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 .video-title {
     font-size: 1rem;
     color: var(--text-secondary);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     line-height: 1.5;
+    flex: 1;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    /* Standard property */
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.copy-small-btn {
+    background: var(--bg-color);
+    border: none;
+    box-shadow: var(--neu-icon);
+    border-radius: 8px;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.copy-small-btn:active {
+    box-shadow: var(--neu-pressed);
+    transform: scale(0.95);
 }
 
 .card-actions {

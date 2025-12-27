@@ -3,13 +3,15 @@
 require_once 'config.php';
 checkLogin();
 
+use App\Services\ContactService;
+$contactService = new ContactService($pdo);
+
 // Delete Action
 if (isset($_POST['delete_id'])) {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
         die("Invalid CSRF Token");
     }
-    $stmt = $pdo->prepare("DELETE FROM contacts WHERE id = ?");
-    $stmt->execute([$_POST['delete_id']]);
+    $contactService->deleteContact((int)$_POST['delete_id']);
     header('Location: contacts.php');
     exit;
 }
@@ -20,23 +22,16 @@ $limit = 10;
 $offset = ($page - 1) * $limit;
 
 // Fetch Total for Pagination
-$totalStmt = $pdo->query("SELECT COUNT(*) FROM contacts");
-$totalRows = $totalStmt->fetchColumn();
+$totalRows = $contactService->getTotalContacts();
 $totalPages = ceil($totalRows / $limit);
 
 // Fetch Data
-$stmt = $pdo->prepare("SELECT * FROM contacts ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
-$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$stmt->execute();
-$contacts = $stmt->fetchAll();
+$contacts = $contactService->getAllContacts($limit, $offset);
 
-// View Specific Message (Modal Trigger)
+// View Specific Message
 $viewData = null;
 if (isset($_GET['view'])) {
-    $viewStmt = $pdo->prepare("SELECT * FROM contacts WHERE id = ?");
-    $viewStmt->execute([$_GET['view']]);
-    $viewData = $viewStmt->fetch();
+    $viewData = $contactService->getContactById((int)$_GET['view']);
 }
 ?>
 <!DOCTYPE html>

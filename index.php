@@ -8,8 +8,8 @@ require_once 'includes/header.php';
     <div class="hero-container">
         
         <div class="hero-content">
-            <h1 class="hero-title">Download TikTok Videos <span class="highlight">No Watermark</span></h1>
-            <p class="hero-subtitle">Save TikTok videos in HD, fast, free, and unlimited.</p>
+            <h1 class="hero-title">TikTok Video Downloader <br><span class="highlight">Without Watermark</span></h1>
+            <p class="hero-subtitle">Save TikTok videos and MP3 music in HD quality. Fast, free, and unlimited downloads for mobile and PC.</p>
 
             <div class="downloader-card">
                 <div class="input-group-lg">

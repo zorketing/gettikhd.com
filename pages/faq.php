@@ -1,5 +1,7 @@
 <?php
 $is_page = true;
+$page_title = 'FAQ - Questions about TikTok Video Downloader';
+$page_desc = 'Find answers to common questions about saving TikTok videos without watermark, MP3 conversion, and legal usage.';
 require_once '../includes/header.php';
 ?>
 
@@ -40,11 +42,31 @@ require_once '../includes/header.php';
 
         <div class="accordion-item">
             <button class="accordion-header">
+                Can I download TikTok MP3?
+                <span>▼</span>
+            </button>
+            <div class="accordion-body">
+                Yes! Once you paste the link, our tool provides an option to "Download Audio MP3" which extracts the music in high quality.
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
+                Does this work on mobile (Android/iOS)?
+                <span>▼</span>
+            </button>
+            <div class="accordion-body">
+                Absolutely. TikTokDL is mobile-first. You only need a mobile browser to save videos directly to your gallery or files.
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">
                 Why did the download fail?
                 <span>▼</span>
             </button>
             <div class="accordion-body">
-                Common reasons include: private videos, deleted videos, or unstable internet connection. If the issue persists, try again in a few minutes.
+                Downloads usually fail if the video is private, has been deleted, or if your internet connection is unstable. If the issue persists, try refreshing the page and pasting the link again.
             </div>
         </div>
     </div>

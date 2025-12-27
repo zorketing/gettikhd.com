@@ -1,19 +1,24 @@
 <?php
-// stream.php - Optimized Download Method (Refined)
+// stream.php - Optimized Download Method
+require_once __DIR__ . '/../includes/config.php';
 
 // Disable errors to prevent binary corruption
 ini_set('display_errors', 0);
 error_reporting(0);
 set_time_limit(0);
 
+// Use implicit flush to push data to browser as it arrives
+ob_implicit_flush(true);
+if (ob_get_level()) ob_end_clean();
+
 // Security
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
 
 // Get Parameters
-$videoUrl = isset($_GET['url']) ? urldecode($_GET['url']) : ''; // Decode as requested
+$videoUrl = isset($_GET['url']) ? urldecode($_GET['url']) : '';
 $filename = $_GET['name'] ?? 'video.mp4';
-$noHeader = isset($_GET['noheader']); // Skip download headers for JS fetch (bypasses IDM)
+$noHeader = isset($_GET['noheader']);
 
 if (empty($videoUrl)) {
     http_response_code(400);
@@ -21,18 +26,8 @@ if (empty($videoUrl)) {
     exit;
 }
 
-// SSRF Protection: Whitelist allowed domains
-$allowedPatterns = [
-    'tiktokcdn.com',
-    'tiktokcdn-us.com',
-    'tiktok.com',
-    'musical.ly',
-    'muscdn.com',
-    'byteoversea.com',
-    'ibytedtos.com',
-    'tiktokv.com',
-    'tikwm.com'
-];
+// SSRF Protection: Use Whitelist from Config
+$allowedPatterns = ALLOWED_STREAM_DOMAINS;
 
 $parsedUrl = parse_url($videoUrl);
 $host = $parsedUrl['host'] ?? '';

@@ -163,6 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
 
+                    <!-- Video Title with Copy Icon -->
+                    <div class="video-title-wrapper">
+                        <p class="video-title">${title ? title : 'No Tagline'}</p>
+                        <button id="copyTitleBtn" class="copy-small-btn" title="Copy Title">📋</button>
+                    </div>
+
                     <!-- Progress Bar (Dynamic) -->
                      <div id="progressContainer" class="progress-container" style="display: none; margin-bottom: 20px;">
                         <div class="progress-bar">
@@ -170,9 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <p id="progressText" class="progress-text">0%</p>
                     </div>
-
-                    <!-- Video Title -->
-                    <p class="video-title">${title ? title : 'No Tagline'}</p>
 
                     <!-- Action Buttons -->
                     <div class="card-actions">
@@ -183,15 +186,24 @@ document.addEventListener('DOMContentLoaded', () => {
                             🎵 Download Audio MP3
                         </button>
                     </div>
-                     <button id="resetBtn" class="btn-link">Download Another</button>
+                     <button id="resetBtn" class="btn-link">Download Another Video</button>
                 </div>
             </div>
         `;
         resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         // Attach Events
         document.getElementById('dlVideoBtn').addEventListener('click', () => downloadVideo(videoUrl, title, 'mp4'));
         document.getElementById('dlAudioBtn').addEventListener('click', () => downloadVideo(music, title, 'mp3'));
+        
+        document.getElementById('copyTitleBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(title || '').then(() => {
+                const btn = document.getElementById('copyTitleBtn');
+                btn.textContent = '✅';
+                setTimeout(() => btn.textContent = '📋', 2000);
+            });
+        });
 
         // Reset Event
         document.getElementById('resetBtn').addEventListener('click', () => {
@@ -199,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultContainer.innerHTML = '';
             urlInput.value = '';
             urlInput.focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 

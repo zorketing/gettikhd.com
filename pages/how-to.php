@@ -1,5 +1,7 @@
 <?php
 $is_page = true;
+$page_title = 'How to Download TikTok Videos - Easy 3 Step Guide';
+$page_desc = 'Learn how to save TikTok videos without watermark in 3 simple steps. Supported on iPhone, Android, and PC.';
 require_once '../includes/header.php';
 ?>
 

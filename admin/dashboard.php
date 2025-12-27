@@ -3,7 +3,9 @@
 require_once 'config.php';
 checkLogin();
 
-// Logout Logic (Changed to POST with CSRF for security)
+use App\Services\ContactService;
+
+// Logout Logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
         die("Invalid CSRF Token");
@@ -13,13 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     exit;
 }
 
+$contactService = new ContactService($pdo);
+
 // Fetch Stats
-$totalStmt = $pdo->query("SELECT COUNT(*) FROM contacts");
-$totalMessages = $totalStmt->fetchColumn();
+$totalMessages = $contactService->getTotalContacts();
 
 // Fetch Recent Messages
-$recentStmt = $pdo->query("SELECT * FROM contacts ORDER BY created_at DESC LIMIT 5");
-$recentMessages = $recentStmt->fetchAll();
+$recentMessages = $contactService->getAllContacts(5);
 ?>
 <!DOCTYPE html>
 <html lang="en">

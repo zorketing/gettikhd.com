@@ -1,15 +1,7 @@
 <?php
 // admin/config.php
+require_once __DIR__ . '/../includes/config.php';
 session_start();
-
-// Admin Credentials
-// Default: Jacob / Jacob123
-define('ADMIN_USER', 'Jacob');
-// Hash for 'Jacob123'
-define('ADMIN_PASS_HASH', '$2y$10$3L2KpHkqSPhm4Ibttnd6zeo1NFzWKh2jLCsI.DpYJnd34MMqHHKaK'); 
-
-// Database Path
-define('DB_PATH', __DIR__ . '/data.db');
 
 // Connect to SQLite
 try {
