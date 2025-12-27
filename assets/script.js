@@ -142,13 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (music && !music.startsWith('http')) music = apiBase + music;
         if (author.avatar && !author.avatar.startsWith('http')) author.avatar = apiBase + author.avatar;
 
+        // Bypassing CORS/NotSameOrigin by proxying images through our server
+        const proxyCover = `api/stream.php?url=${encodeURIComponent(cover)}&name=cover.jpg&noheader=1`;
+        const proxyAvatar = author.avatar ? `api/stream.php?url=${encodeURIComponent(author.avatar)}&name=avatar.jpg&noheader=1` : 'assets/default-user.png';
+
         const sizeLabel = hd_size > 0 ? `(${formatSize(hd_size)})` : (size > 0 ? `(${formatSize(size)})` : '');
 
         resultContainer.innerHTML = `
             <div class="horizontal-card">
                 <!-- Left Side: Video Preview -->
                 <div class="card-preview">
-                    <img src="${cover}" alt="Video Thumbnail" class="thumbnail">
+                    <img src="${proxyCover}" alt="Video Thumbnail" class="thumbnail" onerror="this.src='assets/default-cover.png'">
                     <div class="play-overlay">▶</div>
                 </div>
 
@@ -156,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-content">
                     <!-- Author Header -->
                     <div class="card-header">
-                        <img src="${author.avatar || 'assets/default-user.png'}" alt="User" class="avatar" onerror="this.src='https://via.placeholder.com/60'">
+                        <img src="${proxyAvatar}" alt="User" class="avatar" onerror="this.src='assets/default-user.png'">
                         <div class="author-info">
                             <span class="author-name">${author.nickname || 'TikTok User'}</span>
                             <span class="author-username">@${author.unique_id || 'username'}</span>
@@ -196,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Attach Events
         document.getElementById('dlVideoBtn').addEventListener('click', () => downloadVideo(videoUrl, title, 'mp4'));
         document.getElementById('dlAudioBtn').addEventListener('click', () => downloadVideo(music, title, 'mp3'));
-        
+
         document.getElementById('copyTitleBtn').addEventListener('click', () => {
             navigator.clipboard.writeText(title || '').then(() => {
                 const btn = document.getElementById('copyTitleBtn');

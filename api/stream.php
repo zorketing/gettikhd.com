@@ -56,7 +56,7 @@ $filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
 if (strlen($filename) > 100) {
     $filename = substr($filename, 0, 100);
 }
-if (!preg_match('/\.(mp4|mp3|webm)$/', $filename)) {
+if (!preg_match('/\.(mp4|mp3|webm|jpg|jpeg|png|webp)$/', $filename)) {
     $filename .= '.mp4';
 }
 
